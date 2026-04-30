@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -19,7 +19,7 @@ export default function Task() {
   const token = localStorage.getItem("token");
 
   // ✅ Fetch tasks
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const res = await fetch("/api/tasks", {
         headers: {
@@ -35,10 +35,10 @@ export default function Task() {
     } catch (err) {
       toast.error("Error fetching tasks");
     }
-  };
+  }, [token]);
 
   // ✅ Fetch projects (for dropdown)
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     try {
       const res = await fetch("/api/projects", {
         headers: {
@@ -54,18 +54,18 @@ export default function Task() {
     } catch (err) {
       console.log(err);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchTasks();
     fetchProjects();
-  }, []);
+  }, [fetchTasks, fetchProjects]);
 
   // ✅ Create Task (Admin)
   const handleCreateTask = async (e) => {
     e.preventDefault();
 
-    const { title, description, assignedTo, projectId, dueDate } = formData;
+    const { title, assignedTo, projectId } = formData; // ✅ removed unused description, dueDate
 
     if (!title || !assignedTo || !projectId) {
       return toast.error("Fill required fields");

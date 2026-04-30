@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -12,8 +12,8 @@ export default function Project() {
 
     const token = localStorage.getItem("token");
 
-    // ✅ Fetch Projects
-    const fetchProjects = async () => {
+    // ✅ Fetch Projects (wrapped in useCallback)
+    const fetchProjects = useCallback(async () => {
         try {
             const res = await fetch("/api/projects", {
                 headers: {
@@ -31,11 +31,11 @@ export default function Project() {
         } catch (err) {
             toast.error("Error fetching projects");
         }
-    };
+    }, [token]); // token is a dependency
 
     useEffect(() => {
         fetchProjects();
-    }, []);
+    }, [fetchProjects]);
 
     // ✅ Create Project (Admin only)
     const handleCreateProject = async (e) => {
@@ -141,7 +141,6 @@ export default function Project() {
                 </form>
             )}
 
-            {/* ✅ Project List */}
             {/* ✅ Project List */}
             <div className="grid md:grid-cols-2 gap-6">
 

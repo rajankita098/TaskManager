@@ -71,7 +71,7 @@ export default function Dashboard() {
     };
 
     fetchData();
-  }, [currentUser]);
+  }, [currentUser,token]);
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6">
