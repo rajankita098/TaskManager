@@ -34,7 +34,9 @@ export default function SignIn() {
     try {
       dispatch(signInStart());
 
-      const res = await fetch("/api/auth/login", {
+      // ✅ Use environment variable for backend URL
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

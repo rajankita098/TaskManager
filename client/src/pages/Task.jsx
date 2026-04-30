@@ -21,7 +21,8 @@ export default function Task() {
   // ✅ Fetch tasks
   const fetchTasks = useCallback(async () => {
     try {
-      const res = await fetch("/api/tasks", {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API_BASE_URL}/api/tasks`, {
         headers: {
           Authorization: token,
         },
@@ -40,7 +41,8 @@ export default function Task() {
   // ✅ Fetch projects (for dropdown)
   const fetchProjects = useCallback(async () => {
     try {
-      const res = await fetch("/api/projects", {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API_BASE_URL}/api/projects`, {
         headers: {
           Authorization: token,
         },
@@ -65,14 +67,15 @@ export default function Task() {
   const handleCreateTask = async (e) => {
     e.preventDefault();
 
-    const { title, assignedTo, projectId } = formData; // ✅ removed unused description, dueDate
+    const { title, assignedTo, projectId } = formData;
 
     if (!title || !assignedTo || !projectId) {
       return toast.error("Fill required fields");
     }
 
     try {
-      const res = await fetch("/api/tasks", {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API_BASE_URL}/api/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +106,8 @@ export default function Task() {
   // ✅ Update Task Status
   const handleUpdateStatus = async (taskId, status) => {
     try {
-      const res = await fetch(`/api/tasks/${taskId}`, {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

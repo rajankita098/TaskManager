@@ -15,7 +15,9 @@ export default function Project() {
     // ✅ Fetch Projects (wrapped in useCallback)
     const fetchProjects = useCallback(async () => {
         try {
-            const res = await fetch("/api/projects", {
+            // ✅ Use environment variable for backend URL
+            const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+            const res = await fetch(`${API_BASE_URL}/api/projects`, {
                 headers: {
                     Authorization: token,
                 },
@@ -46,7 +48,8 @@ export default function Project() {
         }
 
         try {
-            const res = await fetch("/api/projects", {
+            const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+            const res = await fetch(`${API_BASE_URL}/api/projects`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -77,15 +80,16 @@ export default function Project() {
         }
 
         try {
+            const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
             // First find user by email (you may need backend API)
-            const resUser = await fetch(`/api/auth/get-user?email=${memberEmail}`);
+            const resUser = await fetch(`${API_BASE_URL}/api/auth/get-user?email=${memberEmail}`);
             const userData = await resUser.json();
 
             if (!resUser.ok) {
                 return toast.error("User not found");
             }
 
-            const res = await fetch(`/api/projects/${projectId}/add-member`, {
+            const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/add-member`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -21,9 +21,12 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // ✅ Use environment variable for backend URL
+        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
         // 👤 MEMBER DASHBOARD DATA
         if (currentUser?.role !== "Admin") {
-          const res = await fetch("/api/dashboard", {
+          const res = await fetch(`${API_BASE_URL}/api/dashboard`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -40,7 +43,7 @@ export default function Dashboard() {
 
         // 👩‍💼 ADMIN DASHBOARD DATA
         if (currentUser?.role === "Admin") {
-          const projRes = await fetch("/api/projects", {
+          const projRes = await fetch(`${API_BASE_URL}/api/projects`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -51,7 +54,7 @@ export default function Dashboard() {
             setProjects(projData);
           }
 
-          const taskRes = await fetch("/api/tasks/all", {
+          const taskRes = await fetch(`${API_BASE_URL}/api/tasks/all`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -71,7 +74,7 @@ export default function Dashboard() {
     };
 
     fetchData();
-  }, [currentUser,token]);
+  }, [currentUser, token]);
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6">

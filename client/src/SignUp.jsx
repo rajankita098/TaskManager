@@ -38,7 +38,9 @@ export default function Signup() {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/auth/signup", {
+      // ✅ Use environment variable for backend URL
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
