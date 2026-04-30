@@ -1,5 +1,4 @@
 {
-  "proxy": "http://localhost:5000",
   "name": "data-finance-yt",
   "version": "0.1.0",
   "private": true,
@@ -23,8 +22,9 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "serve -s build -l $PORT",
     "build": "react-scripts build",
+    "dev": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -49,6 +49,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.4",
     "postcss": "^8.4.12",
+    "serve": "^14.2.6",
     "tailwindcss": "^3.0.24"
   }
 }
