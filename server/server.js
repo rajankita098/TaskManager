@@ -19,19 +19,31 @@ dotenv.config();
 
 const app = express();
 
-// ✅ Updated Middleware for Production
-app.use(express.json());
+// ✅ CORS configuration – allow your Vercel frontend if CLIENT_URL is set, otherwise allow all origins (for development)
+const allowedOrigins = process.env.CLIENT_URL ? [process.env.CLIENT_URL] : '*';
 app.use(cors({
-  origin: process.env.CLIENT_URL || "*", // Allows requests from your Railway frontend
+  origin: allowedOrigins,
   credentials: true
 }));
 
-// Test route
+// If CLIENT_URL is not set, log a warning (but still allow all)
+if (!process.env.CLIENT_URL) {
+  console.warn('⚠️ CLIENT_URL environment variable is not set. CORS will allow all origins.');
+}
+
+app.use(express.json());
+
+// Test route (basic health check)
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// ✅ Route Middlewares
+// Optional explicit health check endpoint (useful for monitoring)
+app.get("/api/test", (req, res) => {
+  res.json({ message: "API working perfectly 🚀" });
+});
+
+// ✅ Route middlewares
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
@@ -44,20 +56,18 @@ const connectDB = async () => {
     const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`❌ Error: ${error.message}`);
-    // Do not process.exit(1) in production if you want Railway to try restarting
+    console.error(`❌ MongoDB connection error: ${error.message}`);
+    // Do not exit the process – let Railway handle restarts
   }
 };
 
-// Start server
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, async () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// Start the server only after successful DB connection (optional but recommended)
+const startServer = async () => {
   await connectDB();
-});
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+};
 
-// Optional Health Check
-app.get("/api/test", (req, res) => {
-  res.json({ message: "API working perfectly 🚀" });
-});
+startServer();
